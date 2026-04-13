@@ -1,0 +1,24 @@
+{
+  "name": "alliance-backend",
+  "version": "1.0.0",
+  "description": "Alliance Behavioral Therapy Backend API",
+  "main": "src/server.js",
+  "type": "module",
+   "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": ["node", "express", "mongodb", "backend"],
+  "author": "WebieApp Team",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.4.1",
+    "resend": "^6.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
