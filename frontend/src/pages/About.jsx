@@ -1,7 +1,7 @@
 import Container from "../components/common/Container";
 import { Link } from "react-router-dom";
 import therapyImg from "../assets/about/therapy.jpg";
-import familyImg from "../assets/about/family.jpg";
+import familyImg from "../assets/about/family.webp";
 import {
   ShieldCheck,
   ClipboardCheck,

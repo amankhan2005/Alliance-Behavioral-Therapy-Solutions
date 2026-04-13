@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/* 
+  IMPORTANT: To fully prevent iOS zoom on input focus, ensure your index.html has:
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+*/
+
 // ── Design tokens ─────────────────────────────────────────────────────────────
 const T = {
   bg:      "#F5F9FF",
@@ -25,6 +30,14 @@ function useIsMobile() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   return isMobile;
+}
+
+// Safeguard: Inject viewport meta tag if missing
+if (typeof document !== "undefined") {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (viewport && !viewport.content.includes("maximum-scale")) {
+    viewport.content = "width=device-width, initial-scale=1, maximum-scale=1";
+  }
 }
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
@@ -73,24 +86,11 @@ const ArrowIcon = ({ size = 11, color = T.white }) => (
 // ── Reply content ─────────────────────────────────────────────────────────────
 const REPLIES = {
   services: {
-    text: `We provide specialized behavioral therapy services designed to support children and families, including:
-
-• Autism Therapy
-• Behavioral Therapy
-• Parent Training
-• Social Skills Development
-
-Each program is tailored to meet individual needs and promote long-term progress.`,
+    text: `We provide specialized behavioral therapy services designed to support children and families, including:\n\n• Autism Therapy\n• Behavioral Therapy\n• Parent Training\n• Social Skills Development\n\nEach program is tailored to meet individual needs and promote long-term progress.`,
     showContactBtn: false,
   },
   about: {
-    text: `At Alliance Behavioral Therapy Solutions, we are dedicated to helping individuals and families achieve meaningful progress through evidence-based behavioral therapy.
-
-Our Mission
-To provide compassionate, individualized care that empowers children and families to reach their full potential.
-
-Our Vision
-To be a trusted leader in behavioral healthcare, creating lasting positive change in every life we touch.`,
+    text: `At Alliance Behavioral Therapy Solutions, we are dedicated to helping individuals and families achieve meaningful progress through evidence-based behavioral therapy.\n\nOur Mission\nTo provide compassionate, individualized care that empowers children and families to reach their full potential.\n\nOur Vision\nTo be a trusted leader in behavioral healthcare, creating lasting positive change in every life we touch.`,
     showContactBtn: false,
   },
   call: {
@@ -98,17 +98,11 @@ To be a trusted leader in behavioral healthcare, creating lasting positive chang
     showContactBtn: false,
   },
   book: {
-    text: `Getting started is simple. You can schedule a free consultation call using the button below, or visit our contact page to request an appointment.
-
-Contact page: /contact-us`,
+    text: `Getting started is simple. You can schedule a free consultation call using the button below, or visit our contact page to request an appointment.\n\nContact page: /contact-us`,
     showContactBtn: true,
   },
   contact: {
-    text: `You can reach our team through our contact page:
-
-/contact-us
-
-You can also schedule a call directly using the button below.`,
+    text: `You can reach our team through our contact page:\n\n/contact-us\n\nYou can also schedule a call directly using the button below.`,
     showContactBtn: true,
   },
   confidential: {
@@ -192,14 +186,14 @@ const TypingIndicator = ({ isMobile }) => (
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: 4 }}
     transition={{ duration: 0.18 }}
-    style={{ display: "flex", alignItems: "center", gap: 8 }}
+    style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
   >
     <div style={makeStyles(isMobile).botAvatar}>
       <ChatIcon size={11} color={T.primary} />
     </div>
     <div style={{
       ...makeStyles(isMobile).bubble.bot,
-      display: "flex", gap: 5, padding: "10px 13px",
+      display: "flex", gap: "0.3125rem", padding: "0.625rem 0.8125rem",
     }}>
       {[0, 150, 300].map((delay) => (
         <motion.div
@@ -214,12 +208,12 @@ const TypingIndicator = ({ isMobile }) => (
 );
 
 // ── In-bubble Contact button ──────────────────────────────────────────────────
-const ContactButton = ({ isMobile }) => (
+const ContactButton = () => (
   <motion.button
-    whileHover={{ scale: 1.03, boxShadow: "0 6px 18px rgba(13,37,80,0.30)" }}
+    whileHover={{ scale: 1.03, boxShadow: "0 0.375rem 1.125rem rgba(13,37,80,0.30)" }}
     whileTap={{ scale: 0.97 }}
     onClick={() => { window.location.href = "/contact-us"; }}
-    style={makeStyles(isMobile).contactBtn}
+    style={makeStyles(false).contactBtn}
     aria-label="Visit contact page"
   >
     Contact Us
@@ -239,20 +233,26 @@ const Message = ({ msg, isMobile }) => {
         display: "flex",
         justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
         alignItems: "flex-end",
-        gap: isMobile ? 6 : 8,
+        gap: "0.5rem",
       }}
     >
       {msg.sender === "bot" && (
         <div style={s.botAvatar}>
-          <ChatIcon size={isMobile ? 11 : 12} color={T.primary} />
+          <ChatIcon size={12} color={T.primary} />
         </div>
       )}
-      <div style={{ display: "flex", flexDirection: "column", gap: 7, maxWidth: "84%" }}>
+      <div style={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        gap: "0.5rem", 
+        maxWidth: "85%", 
+        overflowWrap: "break-word" 
+      }}>
         <div style={msg.sender === "user" ? s.bubble.user : s.bubble.bot}>
           {msg.text}
         </div>
         {msg.sender === "bot" && msg.showContactBtn && (
-          <ContactButton isMobile={isMobile} />
+          <ContactButton />
         )}
       </div>
     </motion.div>
@@ -263,12 +263,12 @@ const Message = ({ msg, isMobile }) => {
 export default function FloatingAIChat() {
   const isMobile = useIsMobile();
 
-const [open, setOpen] = useState(() => {
-  if (typeof window !== "undefined") {
-    return window.innerWidth >= 768; // desktop = open, mobile = closed
-  }
-  return true;
-});
+  const [open, setOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -283,7 +283,9 @@ const [open, setOpen] = useState(() => {
   const s = makeStyles(isMobile);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, typing]);
 
   const handleSend = (text) => {
@@ -308,7 +310,6 @@ const [open, setOpen] = useState(() => {
 
   return (
     <>
-      {/* ── Chat card ── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -323,7 +324,7 @@ const [open, setOpen] = useState(() => {
             {/* Header */}
             <div style={s.header}>
               <div style={s.headerAvatar}>
-                <ChatIcon size={isMobile ? 14 : 16} color={T.accent} />
+                <ChatIcon size={16} color={T.accent} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={s.headerName}>Alliance Care Assistant</div>
@@ -343,7 +344,7 @@ const [open, setOpen] = useState(() => {
                 onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.2)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
               >
-                <CloseIcon size={isMobile ? 10 : 11} />
+                <CloseIcon size={11} />
               </button>
             </div>
 
@@ -372,7 +373,6 @@ const [open, setOpen] = useState(() => {
               )}
             </AnimatePresence>
 
-            {/* Divider */}
             <div style={s.divider} />
 
             {/* Messages */}
@@ -395,6 +395,8 @@ const [open, setOpen] = useState(() => {
                 placeholder="Type your message..."
                 style={s.input}
                 aria-label="Chat message input"
+                inputMode="text"
+                autoComplete="off"
               />
               <motion.button
                 whileHover={{ scale: 1.08, opacity: 0.9 }}
@@ -403,20 +405,20 @@ const [open, setOpen] = useState(() => {
                 style={s.sendBtn}
                 aria-label="Send message"
               >
-                <SendIcon size={isMobile ? 13 : 15} />
+                <SendIcon size={15} />
               </motion.button>
             </div>
 
             {/* CTA */}
             <div style={s.ctaWrap}>
               <motion.button
-                whileHover={{ scale: 1.02, boxShadow: "0 10px 26px rgba(13,37,80,0.42)" }}
+                whileHover={{ scale: 1.02, boxShadow: "0 0.625rem 1.625rem rgba(13,37,80,0.42)" }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => { window.location.href = "tel:+13019809679"; }}
                 style={s.ctaBtn}
                 aria-label="Schedule a free call"
               >
-                <PhoneIcon size={isMobile ? 13 : 14} />
+                <PhoneIcon size={14} />
                 Schedule a free call
               </motion.button>
             </div>
@@ -433,12 +435,12 @@ const [open, setOpen] = useState(() => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            whileHover={{ scale: 1.1, boxShadow: "0 10px 30px rgba(13,37,80,0.45)" }}
+            whileHover={{ scale: 1.1, boxShadow: "0 0.625rem 1.875rem rgba(13,37,80,0.45)" }}
             whileTap={{ scale: 0.92 }}
             style={s.fab}
             aria-label="Open chat assistant"
           >
-            <ChatIcon size={isMobile ? 18 : 20} color={T.white} />
+            <ChatIcon size={20} color={T.white} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -448,40 +450,41 @@ const [open, setOpen] = useState(() => {
 
 // ── Responsive styles factory ─────────────────────────────────────────────────
 function makeStyles(isMobile) {
+  const touchTarget = "2.75rem"; // 44px
+  
   return {
-    // ── Card shell ──────────────────────────────────────────────────────────
     card: {
       position: "fixed",
-      right: isMobile ? "1rem" : "1.5rem",
-      top: isMobile ? "auto" : "45%",
-bottom: isMobile ? "90px" : "auto",
-transform: isMobile ? "none" : "translateY(-50%)",
-      width: "min(92vw, 312px)",
-      maxHeight: isMobile ? "78vh" : "80vh",
+      right: isMobile ? "0.75rem" : "1.5rem",
+      // Changed from 50% to 45% to shift the widget a bit higher on desktop
+      top: isMobile ? "auto" : "45%", 
+      bottom: isMobile ? "5.5rem" : "auto",
+      transform: isMobile ? "none" : "translateY(-50%)",
+      width: "min(92vw, 22rem)",
+      maxHeight: isMobile ? "85vh" : "80vh",
       zIndex: 9999,
       background: T.white,
-      borderRadius: isMobile ? "18px" : "22px",
+      borderRadius: isMobile ? "1.125rem" : "1.375rem",
       border: `1px solid ${T.border}`,
-      boxShadow: "0 12px 40px rgba(24,95,165,0.13), 0 2px 10px rgba(24,95,165,0.07)",
+      boxShadow: "0 0.75rem 2.5rem rgba(24,95,165,0.13), 0 0.125rem 0.625rem rgba(24,95,165,0.07)",
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
-     fontFamily: "'Rajdhani', sans-serif",
+      fontFamily: "'Rajdhani', sans-serif",
     },
 
-    // ── Header ──────────────────────────────────────────────────────────────
     header: {
       background: T.dark,
-      padding: isMobile ? "11px 13px" : "14px 16px",
+      padding: isMobile ? "0.625rem 0.75rem" : "0.875rem 1rem",
       display: "flex",
       alignItems: "center",
-      gap: 9,
+      gap: "0.625rem",
       flexShrink: 0,
     },
 
     headerAvatar: {
-      width: isMobile ? 30 : 36,
-      height: isMobile ? 30 : 36,
+      width: "2.25rem",
+      height: "2.25rem",
       borderRadius: "50%",
       background: "#1e3a6e",
       border: "1.5px solid rgba(0,180,240,0.25)",
@@ -492,7 +495,7 @@ transform: isMobile ? "none" : "translateY(-50%)",
     },
 
     headerName: {
-      fontSize: isMobile ? "12.5px" : "13.5px",
+      fontSize: isMobile ? "0.8125rem" : "0.875rem",
       fontWeight: 700,
       color: T.white,
       lineHeight: 1.2,
@@ -502,27 +505,27 @@ transform: isMobile ? "none" : "translateY(-50%)",
     headerStatus: {
       display: "flex",
       alignItems: "center",
-      gap: 5,
-      marginTop: 2,
+      gap: "0.3125rem",
+      marginTop: "0.125rem",
     },
 
     statusDot: {
-      width: 6,
-      height: 6,
+      width: "0.375rem",
+      height: "0.375rem",
       borderRadius: "50%",
       background: "#22c55e",
       flexShrink: 0,
     },
 
     headerStatusText: {
-      fontSize: "10.5px",
+      fontSize: "0.6875rem",
       color: "rgba(255,255,255,0.6)",
       letterSpacing: "0.01em",
     },
 
     closeBtn: {
-      width: isMobile ? 24 : 28,
-      height: isMobile ? 24 : 28,
+      width: touchTarget,
+      height: touchTarget,
       borderRadius: "50%",
       border: "1px solid rgba(255,255,255,0.15)",
       background: "rgba(255,255,255,0.1)",
@@ -533,60 +536,58 @@ transform: isMobile ? "none" : "translateY(-50%)",
       transition: "background 0.15s",
       outline: "none",
       flexShrink: 0,
+      WebkitTapHighlightColor: "transparent",
     },
 
-    // ── Chips ───────────────────────────────────────────────────────────────
     chipsWrap: {
-      padding: isMobile ? "8px 10px 0" : "10px 12px 0",
+      padding: isMobile ? "0.5rem 0.625rem 0" : "0.625rem 0.75rem 0",
       display: "flex",
-      gap: 5,
+      gap: "0.375rem",
       flexWrap: "wrap",
       overflow: "hidden",
     },
 
     chip: {
-      fontSize: isMobile ? "10.5px" : "11px",
+      fontSize: isMobile ? "0.6875rem" : "0.75rem",
       fontWeight: 600,
       color: T.primary,
       background: T.surface,
       border: `1px solid ${T.border}`,
       borderRadius: "999px",
-      padding: isMobile ? "4px 9px" : "5px 11px",
+      padding: isMobile ? "0.4375rem 0.625rem" : "0.5rem 0.75rem",
       cursor: "pointer",
       outline: "none",
       whiteSpace: "nowrap",
       fontFamily: "'DM Sans', system-ui, sans-serif",
       transition: "background 0.15s",
+      WebkitTapHighlightColor: "transparent",
     },
 
-    // ── Divider ─────────────────────────────────────────────────────────────
     divider: {
       height: "1px",
       background: T.border,
-      margin: isMobile ? "8px 0 0" : "10px 0 0",
+      margin: isMobile ? "0.5rem 0 0" : "0.625rem 0 0",
       opacity: 0.6,
       flexShrink: 0,
     },
 
-    // ── Messages ────────────────────────────────────────────────────────────
     messages: {
-      padding: isMobile ? "10px 10px" : "14px 12px",
+      padding: isMobile ? "0.625rem" : "0.875rem",
       display: "flex",
       flexDirection: "column",
-      gap: isMobile ? 9 : 12,
-      // Responsive height: shrinks on small screens, never overflows card
-      height: isMobile ? "min(190px, 32vh)" : "min(230px, 35vh)",
+      gap: isMobile ? "0.625rem" : "0.75rem",
+      flex: 1,
+      minHeight: 0,
       overflowY: "auto",
+      scrollBehavior: "smooth",
       scrollbarWidth: "thin",
       scrollbarColor: `${T.border} transparent`,
-      // Smooth momentum scroll on iOS
       WebkitOverflowScrolling: "touch",
     },
 
-    // ── Bot avatar ──────────────────────────────────────────────────────────
     botAvatar: {
-      width: isMobile ? 22 : 26,
-      height: isMobile ? 22 : 26,
+      width: "1.625rem",
+      height: "1.625rem",
       borderRadius: "50%",
       background: T.surface,
       border: `1px solid ${T.border}`,
@@ -594,83 +595,82 @@ transform: isMobile ? "none" : "translateY(-50%)",
       alignItems: "center",
       justifyContent: "center",
       flexShrink: 0,
-      marginBottom: 2,
+      marginBottom: "0.125rem",
     },
 
-    // ── Bubbles ─────────────────────────────────────────────────────────────
     bubble: {
       bot: {
-        padding: isMobile ? "8px 11px" : "10px 13px",
-        borderRadius: "16px 16px 16px 4px",
+        padding: isMobile ? "0.625rem 0.75rem" : "0.75rem 0.875rem",
+        borderRadius: "1rem 1rem 1rem 0.25rem",
         background: T.surface,
         color: T.text,
-        fontSize: isMobile ? "12px" : "13px",
+        fontSize: isMobile ? "0.875rem" : "0.9375rem",
         lineHeight: 1.6,
         whiteSpace: "pre-wrap",
+        overflowWrap: "break-word",
         wordBreak: "break-word",
         border: "1px solid rgba(200,220,240,0.6)",
       },
       user: {
-        padding: isMobile ? "8px 11px" : "10px 13px",
-        borderRadius: "16px 16px 4px 16px",
+        padding: isMobile ? "0.625rem 0.75rem" : "0.75rem 0.875rem",
+        borderRadius: "1rem 1rem 0.25rem 1rem",
         background: T.dark,
         color: T.white,
-        fontSize: isMobile ? "12px" : "13px",
+        fontSize: isMobile ? "0.875rem" : "0.9375rem",
         lineHeight: 1.6,
         whiteSpace: "pre-wrap",
+        overflowWrap: "break-word",
         wordBreak: "break-word",
       },
     },
 
-    // ── Contact button (inside bubble) ──────────────────────────────────────
     contactBtn: {
       alignSelf: "flex-start",
       display: "inline-flex",
       alignItems: "center",
-      gap: 5,
-      padding: isMobile ? "6px 12px" : "7px 14px",
+      gap: "0.3125rem",
+      padding: "0.5rem 0.875rem",
       borderRadius: "999px",
       background: T.dark,
       color: T.white,
-      fontSize: isMobile ? "11px" : "12px",
+      fontSize: "0.8125rem",
       fontWeight: 700,
       fontFamily: "'DM Sans', system-ui, sans-serif",
       border: "none",
       cursor: "pointer",
       letterSpacing: "0.02em",
-      boxShadow: "0 4px 12px rgba(13,37,80,0.22)",
+      boxShadow: "0 0.25rem 0.75rem rgba(13,37,80,0.22)",
       outline: "none",
+      WebkitTapHighlightColor: "transparent",
     },
 
-    // ── Input row ───────────────────────────────────────────────────────────
     inputRow: {
-      padding: isMobile ? "8px 10px" : "10px 12px",
+      padding: isMobile ? "0.5rem 0.625rem" : "0.625rem 0.75rem",
       borderTop: `1px solid ${T.border}`,
       display: "flex",
-      gap: 6,
+      gap: "0.5rem",
       alignItems: "center",
       flexShrink: 0,
     },
 
     input: {
       flex: 1,
-      height: isMobile ? "34px" : "38px",
-      padding: "0 12px",
+      height: touchTarget,
+      padding: "0 1rem",
       borderRadius: "999px",
       border: `1.5px solid ${T.border}`,
       fontFamily: "'DM Sans', system-ui, sans-serif",
-      fontSize: isMobile ? "12px" : "13px",
+      fontSize: "1rem", // 16px to prevent iOS zoom
       color: T.text,
       background: T.bg,
       outline: "none",
       transition: "border-color 0.18s",
-      // Prevent iOS zoom on focus (font-size < 16px triggers zoom)
       WebkitTextSizeAdjust: "100%",
     },
 
     sendBtn: {
-      width: isMobile ? 34 : 38,
-      height: isMobile ? 34 : 38,
+      width: touchTarget,
+      height: touchTarget,
       borderRadius: "50%",
       background: T.dark,
       border: "none",
@@ -680,44 +680,44 @@ transform: isMobile ? "none" : "translateY(-50%)",
       justifyContent: "center",
       flexShrink: 0,
       outline: "none",
-      boxShadow: "0 3px 10px rgba(13,37,80,0.22)",
+      boxShadow: "0 0.1875rem 0.625rem rgba(13,37,80,0.22)",
+      WebkitTapHighlightColor: "transparent",
     },
 
-    // ── CTA ─────────────────────────────────────────────────────────────────
     ctaWrap: {
-      padding: isMobile ? "8px 10px 11px" : "10px 12px 14px",
+      padding: isMobile ? "0.5rem 0.625rem 0.75rem" : "0.625rem 0.75rem 0.875rem",
       borderTop: `1px solid ${T.border}`,
       flexShrink: 0,
     },
 
     ctaBtn: {
       width: "100%",
-      padding: isMobile ? "9px 0" : "11px 0",
+      padding: "0.875rem 0",
       borderRadius: "999px",
       border: "none",
       background: "linear-gradient(135deg, #0D2550 0%, #185FA5 100%)",
       color: T.white,
       fontFamily: "'DM Sans', system-ui, sans-serif",
-      fontSize: isMobile ? "12px" : "13px",
+      fontSize: "0.875rem",
       fontWeight: 700,
       letterSpacing: "0.025em",
       cursor: "pointer",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      gap: 7,
-      boxShadow: "0 5px 18px rgba(13,37,80,0.30)",
+      gap: "0.5rem",
+      boxShadow: "0 0.3125rem 1.125rem rgba(13,37,80,0.30)",
       outline: "none",
+      WebkitTapHighlightColor: "transparent",
     },
 
-    // ── FAB ─────────────────────────────────────────────────────────────────
     fab: {
       position: "fixed",
-      bottom: isMobile ? "20px" : "24px",
-      right: isMobile ? "1rem" : "1.5rem",
+      bottom: isMobile ? "1.25rem" : "1.5rem",
+      right: isMobile ? "0.75rem" : "1.5rem",
       zIndex: 9999,
-      width: isMobile ? 48 : 54,
-      height: isMobile ? 48 : 54,
+      width: "3.5rem",
+      height: "3.5rem",
       borderRadius: "50%",
       background: T.dark,
       border: "none",
@@ -725,8 +725,9 @@ transform: isMobile ? "none" : "translateY(-50%)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      boxShadow: "0 6px 24px rgba(13,37,80,0.38)",
+      boxShadow: "0 0.375rem 1.5rem rgba(13,37,80,0.38)",
       outline: "none",
+      WebkitTapHighlightColor: "transparent",
     },
   };
 }

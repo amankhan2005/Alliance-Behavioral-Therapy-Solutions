@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, FileText } from "lucide-react";
+ import { MapPin, Phone, Mail, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 
@@ -25,7 +25,6 @@ const contactInfo = [
   },
   {
     icon: FileText,
-    
     content: {
       text: "(301) 890-6517",
       href: null,
@@ -47,19 +46,19 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#091B3D]  text-white pt-16 pb-8">
+    <footer className="bg-[#091B3D] text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* TOP GRID */}
-        <div className="grid grid-cols-1   md:grid-cols-3 gap-12 items-start text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start text-left md:text-left">
 
           {/* COL 1 — BRAND */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-start">
             <Link to="/" className="mb-5 block">
               <img
                 src={logo}
                 alt="Alliance Behavioral Therapy Solutions logo"
-                className="h-14 w-auto object-contain object-contain"
+                className="h-14 w-auto object-contain"
               />
             </Link>
 
@@ -72,14 +71,14 @@ export default function Footer() {
           </div>
 
           {/* COL 2 — QUICK LINKS */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-start">
             <h3 className="font-['Rajdhani',sans-serif] font-bold text-sm uppercase tracking-[2px] text-[#00B4F0] mb-5">
               Quick Links
             </h3>
 
             <ul className="space-y-3 w-full">
               {navLinks.map(({ label, href }) => (
-                <li key={href} className="flex justify-center md:justify-start">
+                <li key={href} className="flex justify-start">
                   <Link
                     to={href}
                     className="
@@ -101,14 +100,13 @@ export default function Footer() {
           </div>
 
           {/* COL 3 — CONTACT */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-start">
             <h3 className="font-['Rajdhani',sans-serif] font-bold text-sm uppercase tracking-[2px] text-[#00B4F0] mb-5">
               Contact
             </h3>
 
             <ul className="space-y-4 w-full">
               {contactInfo.map(({ icon: Icon, label, content }, idx) => {
-                // Handle both string and object content structures cleanly
                 const displayText = typeof content === 'string' ? content : content.text;
                 const linkHref = typeof content === 'object' ? content.href : null;
                 const isEmail = typeof content === 'object' ? content.isEmail : false;
@@ -120,7 +118,7 @@ export default function Footer() {
                 return (
                   <li
                     key={idx}
-                    className="flex items-start gap-3 justify-center md:justify-start text-sm text-white/70"
+                    className="flex items-start gap-3 justify-start text-sm text-white/70"
                   >
                     <Icon
                       size={16}
@@ -140,7 +138,7 @@ export default function Footer() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="border-t border-white/10 mt-14 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-white/40 font-sans">
+        <div className="border-t border-white/10 mt-14 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs text-white/40 font-sans">
           <p>
             &copy; {currentYear} Alliance Behavioral Therapy Solutions, LLC. All rights reserved.
           </p>

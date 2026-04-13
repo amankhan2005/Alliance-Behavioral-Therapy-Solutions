@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import CTA from "../sections/CTA";
 
-import autismImg from "../assets/services/autism-therapy.jpg";
+import autismImg from "../assets/services/autism-therapy.jpeg";
 import behavioralImg from "../assets/services/behavioral-therapy.jpg";
-import parentImg from "../assets/services/parent-training.jpg";
+import parentImg from "../assets/services/parent-training.webp";
 import socialImg from "../assets/services/social-skills.jpg";
 /* ─── DATA ──────────────────────────────────────────────────── */
 
