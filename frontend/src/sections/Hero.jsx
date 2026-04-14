@@ -18,7 +18,7 @@ export default function Hero() {
       </video>
 
       {/* OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0D2550]/80 via-[#0D2550]/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0D2550]/70 via-[#0D2550]/20 to-transparent" />
 
       {/* CONTENT */}
       <div className="relative z-10 w-full">
