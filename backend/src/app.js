@@ -10,7 +10,9 @@ app.use(cors({
   origin: [
     "https://alliancebehavioraltherapysolutions.netlify.app",
     "https://alliancebehavioraltherapysolutions.com",
-    "https://www.alliancebehavioraltherapysolutions.com"
+    "https://www.alliancebehavioraltherapysolutions.com",
+    "https://alliancebehavioraltherapysolutions.net",
+    "https://www.alliancebehavioraltherapysolutions.net"
   ],
   methods: ["GET", "POST"],
   credentials: true
