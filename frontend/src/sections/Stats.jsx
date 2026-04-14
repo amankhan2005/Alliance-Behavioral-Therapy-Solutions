@@ -1,172 +1,218 @@
 import { useEffect, useRef } from "react";
-import Container from "../components/common/Container";
+
+// ─── Data ────────────────────────────────────────────────────────────────────
 
 const stats = [
   {
-    id: "families",
-    end: 500,
-    display: "500+",
-    label: "Families Supported",
+    id: "team",
+    title: "Compassionate Team",
+    desc: "Guided by empathy and respect",
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36">
-        <circle cx="12" cy="13" r="5" stroke="#60c0ff" strokeWidth="1.5" />
-        <circle cx="24" cy="13" r="5" stroke="#60c0ff" strokeWidth="1.5" />
-        <path d="M2 30c0-5.5 4.5-9 10-9" stroke="#60c0ff" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M34 30c0-5.5-4.5-9-10-9" stroke="#60c0ff" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M12 21c3-1.5 9-1.5 12 0" stroke="#90d8ff" strokeWidth="1.5" strokeLinecap="round" />
+      <svg viewBox="0 0 48 48" fill="none" width="48" height="48" aria-hidden="true">
+        <circle cx="24" cy="17" r="7" stroke="#60c0ff" strokeWidth="1.6" />
+        <path d="M10 40c0-7 6-12 14-12s14 5 14 12" stroke="#60c0ff" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M30 22c4 1 8 5 8 10" stroke="#90d8ff" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="36" cy="18" r="4.5" stroke="#90d8ff" strokeWidth="1.4" />
+        <path d="M29 10c1.5-1 3.5-1 5 0" stroke="#90d8ff" strokeWidth="1.3" strokeLinecap="round" />
       </svg>
     ),
   },
   {
-    id: "response",
-    end: null,
-    display: "24–48h",
-    label: "Response Time",
+    id: "admissions",
+    title: "Efficient Admissions",
+    desc: "A streamlined process for quick support",
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36">
-        <circle cx="18" cy="18" r="13" stroke="#60c0ff" strokeWidth="1.5" />
-        <path d="M18 10v8l5 3" stroke="#90d8ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <svg viewBox="0 0 48 48" fill="none" width="48" height="48" aria-hidden="true">
+        <circle cx="24" cy="24" r="17" stroke="#60c0ff" strokeWidth="1.6" />
+        <path d="M24 13v11l7 4" stroke="#90d8ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 36l4-4" stroke="#60c0ff" strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx="13" cy="37" r="2" fill="#90d8ff" opacity="0.6" />
       </svg>
     ),
   },
   {
-    id: "improvement",
-    end: 98,
-    display: "98%",
-    label: "Improvement Rate",
+    id: "plans",
+    title: "Individual Plans",
+    desc: "Care paths crafted for personal success",
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36">
-        <path d="M4 28 L10 18 L16 22 L22 12 L28 16 L34 6" stroke="#60c0ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="34" cy="6" r="2.5" fill="#90d8ff" />
+      <svg viewBox="0 0 48 48" fill="none" width="48" height="48" aria-hidden="true">
+        <rect x="10" y="8" width="28" height="34" rx="4" stroke="#60c0ff" strokeWidth="1.6" />
+        <path d="M16 18h16M16 24h12M16 30h8" stroke="#90d8ff" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="34" cy="34" r="6" fill="#0D2550" stroke="#60c0ff" strokeWidth="1.4" />
+        <path d="M31 34l2 2 4-4" stroke="#90d8ff" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
   {
-    id: "years",
-    end: 10,
-    display: "10+",
-    label: "Years Experience",
+    id: "vision",
+    title: "Growing Vision",
+    desc: "Committed to long-term impact and innovation",
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36">
-        <path d="M18 4 L22 14 L33 14 L24 21 L27 32 L18 25 L9 32 L12 21 L3 14 L14 14 Z" stroke="#60c0ff" strokeWidth="1.5" strokeLinejoin="round" />
+      <svg viewBox="0 0 48 48" fill="none" width="48" height="48" aria-hidden="true">
+        <path d="M8 36 L16 26 L22 30 L30 18 L38 10" stroke="#60c0ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="38" cy="10" r="3" fill="#90d8ff" />
+        <path d="M30 36h10M35 31v10" stroke="#90d8ff" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="35" cy="36" r="4.5" stroke="#60c0ff" strokeWidth="1.3" opacity="0.5" />
       </svg>
     ),
   },
 ];
 
-function useCountUp(ref, end, suffix = "", delay = 900, duration = 1600) {
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function StatCol({ stat, index, isLast }) {
+  const lineRef = useRef(null);
+
+  // Animate the underline via IntersectionObserver
   useEffect(() => {
-    if (end === null) return;
-    const el = ref.current;
+    const el = lineRef.current;
     if (!el) return;
-    const timer = setTimeout(() => {
-      const t0 = performance.now();
-      function tick(now) {
-        const p = Math.min((now - t0) / duration, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(ease * end) + suffix;
-        if (p < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [ref, end, suffix, delay, duration]);
-}
-
-function StatBlock({ stat, index }) {
-  const valRef = useRef(null);
-  const barRef = useRef(null);
-  const suffix = stat.display.includes("%") ? "%" : stat.display.includes("+") ? "+" : "";
-
-  useCountUp(valRef, stat.end, suffix, 900 + index * 200);
-
-  useEffect(() => {
-    const bar = barRef.current;
-    if (!bar) return;
-    const timer = setTimeout(() => {
-      bar.style.width = "100%";
-    }, 900 + index * 200);
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  const isLast = index === stats.length - 1;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.transform = "scaleX(1)";
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
-      className="relative flex-1 min-w-[160px] max-w-[320px] px-6 py-10 text-center"
+      className="relative flex-1 min-w-[220px] px-7 py-8 text-center group transition-transform duration-300 hover:-translate-y-1.5"
       style={{
-        animation: `fadeUp 0.7s ease forwards`,
-        animationDelay: `${0.4 + index * 0.15}s`,
         opacity: 0,
+        animation: `statsUp 0.7s ease forwards`,
+        animationDelay: `${0.45 + index * 0.17}s`,
       }}
     >
+      {/* Vertical divider */}
       {!isLast && (
-        <span className="absolute right-0 top-[20%] h-[60%] w-px bg-white/10" />
+        <span
+          className="absolute right-0 top-[15%] h-[70%] w-px bg-white/10"
+          aria-hidden="true"
+        />
       )}
 
-      <div className="w-9 h-9 mx-auto mb-4">{stat.icon}</div>
-
+      {/* Icon */}
       <div
-        ref={valRef}
-        className="text-white font-bold tracking-wide leading-none mb-2.5"
-        style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "clamp(36px, 5vw, 52px)" }}
+        className="w-12 h-12 mx-auto mb-5 transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(96,192,255,0.6)]"
+        style={{ transform: "translateY(0)", transition: "filter .3s ease, transform .3s ease" }}
       >
-        {stat.display}
+        {stat.icon}
       </div>
 
-      <p className="text-[11px] tracking-[2.5px] text-white/50 uppercase">
-        {stat.label}
+      {/* Title */}
+      <h3
+        className="text-white font-bold uppercase tracking-[3px] mb-3"
+        style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "clamp(13px, 1.5vw, 15px)" }}
+      >
+        {stat.title}
+      </h3>
+
+      {/* Description */}
+      <p
+        className="text-[11px] tracking-[2px] text-white/40 uppercase leading-relaxed"
+        style={{ fontFamily: "'Rajdhani', sans-serif" }}
+      >
+        {stat.desc}
       </p>
 
-      <div className="h-0.5 bg-white/10 w-10 mx-auto mt-4 overflow-hidden">
+      {/* Animated underline accent */}
+      <div className="h-0.5 bg-white/10 w-9 mx-auto mt-5 overflow-hidden">
         <div
-          ref={barRef}
-          className="h-full bg-[#60c0ff] transition-all duration-[1200ms] ease-out"
-          style={{ width: 0 }}
+          ref={lineRef}
+          className="h-full"
+          style={{
+            background: "linear-gradient(90deg, #60c0ff, #90d8ff)",
+            transform: "scaleX(0)",
+            transformOrigin: "left center",
+            transition: "transform 1s ease",
+          }}
         />
       </div>
     </div>
   );
 }
 
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function Stats() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(14px); }
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
+        @keyframes statsUp {
+          from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-col-hover:hover {
+          transform: translateY(-6px);
         }
       `}</style>
 
-      <section className="bg-[#0D2550] py-20 text-center">
-        <Container>
+      <section
+        className="py-24 text-center"
+        style={{ background: "linear-gradient(160deg, #0D2550 0%, #091a3d 100%)" }}
+        aria-labelledby="stats-heading"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Heading */}
           <h2
-            className="text-white font-bold uppercase tracking-[5px] mb-2"
+            id="stats-heading"
+            className="text-white font-bold uppercase"
             style={{
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "clamp(20px, 3vw, 28px)",
-              animation: "fadeUp 0.8s ease forwards 0.1s",
+              letterSpacing: "6px",
               opacity: 0,
+              animation: "statsUp .8s ease forwards .1s",
             }}
           >
             Quality Care. Real Results.
           </h2>
 
+          {/* Subheading */}
           <p
-            className="text-[11px] tracking-[3px] text-white/40 uppercase mb-14"
-            style={{ animation: "fadeUp 0.8s ease forwards 0.25s", opacity: 0 }}
+            className="mt-3 text-white/35 uppercase"
+            style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "11px",
+              letterSpacing: "3px",
+              opacity: 0,
+              animation: "statsUp .8s ease forwards .25s",
+            }}
           >
-            Trusted by families across the region
+            Building a foundation of care, one family at a time.
           </p>
 
-          <div className="flex justify-center items-stretch flex-wrap">
+          {/* Divider accent */}
+          <div
+            className="mx-auto mt-5 mb-16 h-0.5 w-10 rounded-full"
+            style={{
+              background: "linear-gradient(90deg, #60c0ff, #90d8ff)",
+              opacity: 0,
+              animation: "statsUp .8s ease forwards .35s",
+            }}
+          />
+
+          {/* Stat columns */}
+          <div className="flex flex-wrap justify-between items-stretch gap-y-10 gap-x-6 md:gap-x-0">
             {stats.map((stat, i) => (
-              <StatBlock key={stat.id} stat={stat} index={i} />
+              <StatCol
+                key={stat.id}
+                stat={stat}
+                index={i}
+                isLast={i === stats.length - 1}
+              />
             ))}
           </div>
-        </Container>
+        </div>
       </section>
     </>
   );

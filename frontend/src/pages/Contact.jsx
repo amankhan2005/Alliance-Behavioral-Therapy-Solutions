@@ -379,7 +379,7 @@ export default function Contact() {
             </p>
 
             {/* Stat bar */}
-            <div className="grid grid-cols-3 border-t border-white/10 mt-2">
+            {/* <div className="grid grid-cols-3 border-t border-white/10 mt-2">
               {[
                 { num: 500, suffix: "+", label: "Families Served" },
                 { num: 24, suffix: "h", label: "Response Time" },
@@ -408,7 +408,7 @@ export default function Contact() {
                   </p>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
 

@@ -127,7 +127,7 @@ export default function About() {
           </p>
 
           {/* stat cards — DARK bg → WHITE cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          {/* <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {stats.map((s, i) => (
               <div
                 key={i}
@@ -151,7 +151,7 @@ export default function About() {
                 </p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </section>
 
