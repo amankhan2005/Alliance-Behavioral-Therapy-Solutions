@@ -172,23 +172,7 @@ export default function About() {
                 loading="lazy"
               />
               {/* floating badge — uses primary dark on white section */}
-              <div
-                className="absolute -bottom-5 -right-5 bg-[#0D2550] text-white
-                            px-5 py-4 rounded-[16px] shadow-2xl"
-              >
-                <span
-                  className="block font-['Rajdhani',sans-serif] font-bold
-                             text-[#00B4F0] text-[26px] leading-none tracking-[1px]"
-                >
-                  10+
-                </span>
-                <span
-                  className="font-['Rajdhani',sans-serif] font-bold uppercase
-                             tracking-[1px] text-[11px] text-white/80 mt-0.5 block"
-                >
-                  Years of Trusted Care
-                </span>
-              </div>
+               
             </div>
 
             {/* text block */}
