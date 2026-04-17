@@ -37,8 +37,7 @@ export default function Navbar({ topBarVisible }) {
       />
 
       <nav
-        className={`w-full sticky z-50 bg-white border-b border-[#0D2550]/10 transition-all duration-300 ${
-topBarVisible ? "top-0 md:top-[36px]" : "top-0"        }`}
+        className={`w-full sticky z-50 bg-white border-b border-[#0D2550]/10 transition-all duration-300 ${topBarVisible ? "top-0 md:top-[36px]" : "top-0"}`}
       >
         <Container>
           <div className="flex items-center justify-between py-3">
@@ -48,13 +47,14 @@ topBarVisible ? "top-0 md:top-[36px]" : "top-0"        }`}
               <img src={logo} alt="Alliance BTS" className="h-14 w-auto" />
               <div className="flex flex-col leading-tight">
                 <span
-                  className="text-base font-bold text-[#0D2550] tracking-wide transition-colors group-hover:text-[#00B4F0]"
-                  style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700 }}
+                  className="text-lg md:text-xl font-semibold text-[#0A1F44] tracking-wide transition-colors group-hover:text-[#0077B6]"
+                  style={{ fontFamily: "'Rajdhani', sans-serif" }}
                 >
                   Alliance
                 </span>
+
                 <span
-                  className="text-[10px] text-[#0D2550]/60 tracking-[0.1em] uppercase"
+                  className="text-xs md:text-sm text-[#1B2A4A]  tracking-[0.08em] uppercase"
                   style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 500 }}
                 >
                   Behavioral Therapy
@@ -72,11 +72,10 @@ topBarVisible ? "top-0 md:top-[36px]" : "top-0"        }`}
                   {({ isActive }) => (
                     <>
                       <span
-                        className={`transition-colors duration-300 tracking-wide ${
-                          isActive
+                        className={`transition-colors duration-300 tracking-wide ${isActive
                             ? "text-[#0D2550] font-semibold"
                             : "text-[#0D2550]/80 font-medium group-hover:text-[#00B4F0]"
-                        }`}
+                          }`}
                         style={{ fontWeight: isActive ? 700 : 600 }}
                       >
                         {label}
@@ -84,9 +83,8 @@ topBarVisible ? "top-0 md:top-[36px]" : "top-0"        }`}
 
                       {/* UNDERLINE */}
                       <span
-                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#00B4F0] rounded-full transition-all duration-300 ${
-                          isActive ? "w-full" : "w-0 group-hover:w-full"
-                        }`}
+                        className={`absolute -bottom-1 left-0 h-[2px] bg-[#00B4F0] rounded-full transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"
+                          }`}
                       />
                     </>
                   )}
@@ -150,10 +148,9 @@ topBarVisible ? "top-0 md:top-[36px]" : "top-0"        }`}
                   to={to}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `text-sm px-4 py-2.5 rounded-lg tracking-wide transition-colors duration-300 ${
-                      isActive
-                        ? "text-[#0D2550] bg-[#0D2550]/10 font-bold"
-                        : "text-[#0D2550]/80 font-semibold hover:text-[#00B4F0] hover:bg-[#0D2550]/5"
+                    `text-sm px-4 py-2.5 rounded-lg tracking-wide transition-colors duration-300 ${isActive
+                      ? "text-[#0D2550] bg-[#0D2550]/10 font-bold"
+                      : "text-[#0D2550]/80 font-semibold hover:text-[#00B4F0] hover:bg-[#0D2550]/5"
                     }`
                   }
                   style={{ fontWeight: undefined }}
