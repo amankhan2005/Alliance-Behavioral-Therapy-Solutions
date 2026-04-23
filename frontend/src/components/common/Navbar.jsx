@@ -74,7 +74,7 @@ export default function Navbar({ topBarVisible }) {
                       <span
                         className={`transition-colors duration-300 tracking-wide ${isActive
                             ? "text-[#0D2550] font-semibold"
-                            : "text-[#0D2550]/80 font-medium group-hover:text-[#00B4F0]"
+                            : "text-[#0D2550] font-medium group-hover:text-[#00B4F0]"
                           }`}
                         style={{ fontWeight: isActive ? 700 : 600 }}
                       >
@@ -150,7 +150,7 @@ export default function Navbar({ topBarVisible }) {
                   className={({ isActive }) =>
                     `text-sm px-4 py-2.5 rounded-lg tracking-wide transition-colors duration-300 ${isActive
                       ? "text-[#0D2550] bg-[#0D2550]/10 font-bold"
-                      : "text-[#0D2550]/80 font-semibold hover:text-[#00B4F0] hover:bg-[#0D2550]/5"
+                      : "text-[#0D2550] font-semibold hover:text-[#00B4F0] hover:bg-[#0D2550]/5"
                     }`
                   }
                   style={{ fontWeight: undefined }}

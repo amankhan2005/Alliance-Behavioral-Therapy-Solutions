@@ -65,7 +65,7 @@ export default function Footer() {
             <h2 className="font-['Rajdhani',sans-serif] font-bold text-lg tracking-wide text-white mb-3">
               Alliance Behavioral Therapy Solutions, LLC
             </h2>
-            <p className="text-sm text-white/70 leading-relaxed max-w-xs font-sans">
+            <p className="text-sm text-white leading-relaxed max-w-xs font-sans">
               Compassionate, evidence-based behavioral and autism therapy supporting children and families with personalized care.
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function Footer() {
                     to={href}
                     className="
                       relative inline-block font-['Rajdhani',sans-serif] font-semibold 
-                      text-sm text-white/80 hover:text-[#00B4F0] 
+                      text-sm text-white hover:text-[#00B4F0] 
                       transition-colors duration-300
                       after:absolute after:left-0 after:-bottom-0.5
                       after:h-[1.5px] after:w-full after:rounded-full
@@ -118,7 +118,7 @@ export default function Footer() {
                 return (
                   <li
                     key={idx}
-                    className="flex items-start gap-3 justify-start text-sm text-white/70"
+                    className="flex items-start gap-3 justify-start text-sm text-white"
                   >
                     <Icon
                       size={16}
@@ -127,7 +127,7 @@ export default function Footer() {
                       aria-hidden="true"
                     />
                     <div className="flex flex-col">
-                      {label && <span className="text-[11px] uppercase tracking-wider text-white/50 mb-0.5 font-['Rajdhani',sans-serif] font-bold">{label}</span>}
+                      {label && <span className="text-[11px] uppercase tracking-wider text-white mb-0.5 font-['Rajdhani',sans-serif] font-bold">{label}</span>}
                       {TextElement}
                     </div>
                   </li>

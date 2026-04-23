@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { MapPin, Mail, Phone, FileText, Clock, RefreshCw, ArrowRight, CheckCircle } from "lucide-react";
+import { MapPin, Mail, Phone, FileText, Clock, RefreshCw, ArrowRight, CheckCircle, BookOpen, Star, Users, PlayCircle } from "lucide-react";
 
 /* ─────────────────────────────────────────
    CONTACT INFO DATA
@@ -40,6 +40,36 @@ const contactItems = [
     value: "Mon – Fri · 9:00 AM – 6:00 PM",
     href: null,
     external: false,
+  },
+];
+
+/* ─────────────────────────────────────────
+   ABA RESOURCES DATA
+───────────────────────────────────────── */
+const abaResources = [
+  {
+    icon: BookOpen,
+    title: "What is ABA Therapy?",
+    description: "Learn the fundamentals of Applied Behavior Analysis and how evidence-based techniques support children with autism and developmental differences.",
+    href: "/about-us",
+  },
+  {
+    icon: Star,
+    title: "Benefits of ABA Therapy",
+    description: "Discover how ABA therapy improves communication, social skills, and daily living abilities — with measurable, lasting outcomes for your child.",
+    href: "/about-us",
+  },
+  {
+    icon: Users,
+    title: "Parent Guide",
+    description: "A practical guide for caregivers: what to expect from sessions, how to reinforce skills at home, and how to be an active partner in your child's progress.",
+    href: "/about-us",
+  },
+  {
+    icon: PlayCircle,
+    title: "Getting Started",
+    description: "Ready to take the first step? Understand the intake process, insurance verification, and what happens before your child's first session with our team.",
+    href: "/about-us",
   },
 ];
 
@@ -175,6 +205,7 @@ export default function Contact() {
         .reveal-d1 { transition-delay: 80ms; }
         .reveal-d2 { transition-delay: 180ms; }
         .reveal-d3 { transition-delay: 280ms; }
+        .reveal-d4 { transition-delay: 360ms; }
 
         /* Floating label inputs */
         .field { position: relative; }
@@ -288,18 +319,6 @@ export default function Contact() {
         }
         .success-card { animation: popIn 0.5s cubic-bezier(.22,1,.36,1) both; }
 
-        /* Stat bar */
-        .stat-bar {
-          border-right: 1px solid rgba(255,255,255,0.10);
-        }
-        .stat-bar:last-child { border-right: none; }
-
-        /* Map pin pulse */
-        @keyframes ping {
-          75%, 100% { transform: scale(2); opacity: 0; }
-        }
-        .ping { animation: ping 1.4s cubic-bezier(0,0,.2,1) infinite; }
-
         /* Number input for captcha */
         .captcha-input {
           background: rgba(13,37,80,0.04);
@@ -314,6 +333,54 @@ export default function Contact() {
           transition: border-color 0.2s;
         }
         .captcha-input:focus { border-color: #00B4F0; }
+
+        /* ABA Resource card hover */
+        .resource-card {
+          background: white;
+          border-radius: 16px;
+          padding: 28px;
+          border: 1px solid rgba(13,37,80,0.07);
+          transition: all 0.3s cubic-bezier(.22,1,.36,1);
+          cursor: pointer;
+          text-decoration: none;
+          display: block;
+          position: relative;
+          overflow: hidden;
+        }
+        .resource-card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 3px;
+          background: #00B4F0;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+        }
+        .resource-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 48px rgba(13,37,80,0.12);
+          border-color: rgba(0,180,240,0.20);
+        }
+        .resource-card:hover::before { transform: scaleX(1); }
+        .resource-card:hover .rc-icon { background: rgba(0,180,240,0.12); }
+        .resource-card:hover .rc-arrow { opacity: 1; transform: translateX(0); }
+        .rc-icon {
+          width: 44px; height: 44px; border-radius: 12px;
+          background: rgba(13,37,80,0.05);
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+          margin-bottom: 16px;
+          transition: background 0.3s;
+        }
+        .rc-arrow {
+          opacity: 0;
+          transform: translateX(-6px);
+          transition: all 0.3s cubic-bezier(.22,1,.36,1);
+          display: inline-flex;
+          align-items: center;
+          margin-left: 4px;
+        }
       `}</style>
 
       <section style={{ fontFamily: "'Rajdhani', sans-serif", background: "#F0F4FA" }}>
@@ -377,38 +444,6 @@ export default function Contact() {
             }}>
               Reach out with questions about our Therapy services, scheduling, or insurance coverage. Our team responds within 24 hours.
             </p>
-
-            {/* Stat bar */}
-            {/* <div className="grid grid-cols-3 border-t border-white/10 mt-2">
-              {[
-                { num: 500, suffix: "+", label: "Families Served" },
-                { num: 24, suffix: "h", label: "Response Time" },
-                { num: 10, suffix: "+", label: "Years of Care" },
-              ].map((s, i) => (
-                <div key={i} className="stat-bar py-6">
-                  <p style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(26px, 3vw, 38px)",
-                    color: "white",
-                    lineHeight: 1,
-                    marginBottom: 4,
-                  }}>
-                    <Counter target={s.num} suffix={s.suffix} />
-                  </p>
-                  <p style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontWeight: 600,
-                    fontSize: 11,
-                    letterSpacing: "2px",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.40)",
-                  }}>
-                    {s.label}
-                  </p>
-                </div>
-              ))}
-            </div> */}
           </div>
         </div>
 
@@ -754,12 +789,13 @@ export default function Contact() {
         </div>
 
         {/* ═══════════════════════════════════════
-            MAP
+            ABA RESOURCES
         ═══════════════════════════════════════ */}
         <div className="max-w-6xl mx-auto px-6 pb-16 md:pb-24">
           <div className="reveal reveal-d3">
+
             {/* Section header */}
-            <div className="flex items-center gap-6 mb-6">
+            <div className="flex items-center gap-6 mb-4">
               <div>
                 <p style={{
                   fontFamily: "'Rajdhani', sans-serif",
@@ -770,7 +806,7 @@ export default function Contact() {
                   color: "#00B4F0",
                   marginBottom: 4,
                 }}>
-                  Location
+                  Learn More
                 </p>
                 <h2 style={{
                   fontFamily: "'Rajdhani', sans-serif",
@@ -781,89 +817,97 @@ export default function Contact() {
                   color: "#0D2550",
                   lineHeight: 1.1,
                 }}>
-                  Find Us On the Map
+                  Helpful ABA Resources
                 </h2>
               </div>
               <div className="flex-1 h-px" style={{ background: "rgba(13,37,80,0.10)" }} />
-              <a
-                href="https://www.google.com/maps?q=5921+Gentle+Call+Clarksville+MD"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 11,
-                  letterSpacing: "2px",
-                  textTransform: "uppercase",
-                  color: "#0D2550",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  flexShrink: 0,
-                  opacity: 0.6,
-                  transition: "opacity 0.2s",
-                }}
-                onMouseEnter={e => e.currentTarget.style.opacity = "1"}
-                onMouseLeave={e => e.currentTarget.style.opacity = "0.6"}
-              >
-                Open in Maps <ArrowRight size={12} strokeWidth={2.5} />
-              </a>
             </div>
 
-            {/* Map */}
-            <div className="relative rounded-2xl overflow-hidden"
+            {/* Description */}
+            <p style={{
+              color: "rgba(13,37,80,0.55)",
+              fontSize: 15,
+              lineHeight: 1.7,
+              fontFamily: "sans-serif",
+              fontWeight: 400,
+              maxWidth: 620,
+              marginBottom: 28,
+            }}>
+              Understanding ABA therapy empowers families to be active partners in their child's growth. Explore these guides to learn what to expect and how to get started.
+            </p>
+
+            {/* Resource cards grid */}
+            <div
               style={{
-                boxShadow: "0 8px 40px rgba(13,37,80,0.12)",
-                border: "1px solid rgba(13,37,80,0.08)",
-              }}>
-              {/* Animated pin */}
-              <div className="absolute top-1/2 left-1/2 z-10 pointer-events-none"
-                style={{ transform: "translate(-50%, -50%)" }}>
-                <div style={{ position: "relative", width: 18, height: 18 }}>
-                  <div className="ping" style={{
-                    position: "absolute", inset: 0,
-                    borderRadius: "50%",
-                    background: "#EF4444",
-                    opacity: 0.5,
-                  }} />
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: 16,
+              }}
+            >
+              {abaResources.map(({ icon: Icon, title, description, href }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  className={`resource-card reveal reveal-d${i + 1}`}
+                  style={{ boxShadow: "0 4px 20px rgba(13,37,80,0.06)" }}
+                >
+                  <div className="rc-icon">
+                    <Icon size={20} strokeWidth={1.8} color="#00B4F0" />
+                  </div>
+
+                  <p style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    color: "#0D2550",
+                    marginBottom: 10,
+                    lineHeight: 1.2,
+                    display: "flex",
+                    alignItems: "center",
+                  }}>
+                    {title}
+                    <span className="rc-arrow">
+                      <ArrowRight size={13} strokeWidth={2.5} color="#00B4F0" />
+                    </span>
+                  </p>
+
+                  <p style={{
+                    color: "rgba(13,37,80,0.55)",
+                    fontSize: 13,
+                    lineHeight: 1.65,
+                    fontFamily: "sans-serif",
+                    fontWeight: 400,
+                    margin: 0,
+                  }}>
+                    {description}
+                  </p>
+
+                  {/* Bottom accent */}
                   <div style={{
-                    position: "relative",
-                    width: 18, height: 18,
-                    borderRadius: "50%",
-                    background: "#EF4444",
-                    boxShadow: "0 0 0 3px white, 0 4px 12px rgba(239,68,68,0.5)",
-                  }} />
-                </div>
-              </div>
-
-              <iframe
-                src="https://maps.google.com/maps?q=5921+Gentle+Call+Clarksville+MD+21029&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="400"
-                style={{ border: 0, display: "block", filter: "saturate(0.85) contrast(1.05)" }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Office Location Map"
-              />
+                    marginTop: 20,
+                    paddingTop: 16,
+                    borderTop: "1px solid rgba(13,37,80,0.06)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}>
+                    <span style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      fontWeight: 700,
+                      fontSize: 11,
+                      letterSpacing: "1.5px",
+                      textTransform: "uppercase",
+                      color: "#00B4F0",
+                    }}>
+                      Read Guide
+                    </span>
+                  </div>
+                </a>
+              ))}
             </div>
 
-            {/* Address strip below map */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
-              <div className="flex items-center gap-2">
-                <MapPin size={13} color="#00B4F0" strokeWidth={2} />
-                <span style={{ color: "rgba(13,37,80,0.60)", fontSize: 13, fontFamily: "sans-serif" }}>
-                  5921 Gentle Call, Clarksville, MD 21029
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock size={13} color="#00B4F0" strokeWidth={2} />
-                <span style={{ color: "rgba(13,37,80,0.60)", fontSize: 13, fontFamily: "sans-serif" }}>
-                  Mon – Fri · 9:00 AM – 6:00 PM
-                </span>
-              </div>
-            </div>
           </div>
         </div>
 
